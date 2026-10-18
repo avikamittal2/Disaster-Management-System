@@ -3,7 +3,7 @@
 
 A C++-based Disaster Management System developed as a Project-Based Learning (PBL) project. It helps manage disaster records, affected people, rescue teams, emergency resources, requests, routes, and action history using Object-Oriented Programming and Data Structures.
 
-## 📌 Project Details
+## Project Details
 
 - **Project Title:** Disaster Management System
 - **Team Name:** ShieldNova
@@ -12,7 +12,7 @@ A C++-based Disaster Management System developed as a Project-Based Learning (PB
 - **Semester:** 3rd Semester
 - **Mentor:** Mr. Navneet Rajpoot
 
-## 👥 Team Members
+## Team Members
 
 | Name | Role |
 |---|---|
@@ -21,7 +21,7 @@ A C++-based Disaster Management System developed as a Project-Based Learning (PB
 | Aryan Gautam | Main System Controller |
 | Gaurav Singh Negi | Program Entry Point |
 
-## 🎯 Objectives
+## Objectives
 
 - Maintain disaster and affected-person records.
 - Register and manage rescue teams.
@@ -31,7 +31,7 @@ A C++-based Disaster Management System developed as a Project-Based Learning (PB
 - Maintain an action history.
 - Save affected-person records to a text file.
 
-## ⚙️ Features
+## Features
 
 ### 1. Disaster Management
 Register, update, and view disaster records.
@@ -62,7 +62,7 @@ Record actions and display the latest logged actions first.
 ### 8. File Handling
 Save affected-person records in a text file named `disaster_system_data.txt`.
 
-## 🧠 Concepts Used
+## Concepts Used
 
 - Object-Oriented Programming (OOP)
 - Classes and Objects
@@ -74,60 +74,28 @@ Save affected-person records in a text file named `disaster_system_data.txt`.
 - Input Validation
 - File Handling
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Language:** C++
 - **Libraries:** iostream, vector, string, fstream, algorithm
 - **Tools:** VS Code / Code::Blocks
 - **Version Control:** Git and GitHub
 
-## ▶️ How to Run
+## How to Run
 
 1. Clone or download this repository.
 2. Open the project folder in your C++ IDE.
 3. Compile the C++ source file using a C++ compiler.
 4. Run the generated executable.
-5. Follow the menu displayed in the console.
 
-### Compile using g++
-
-```bash
-g++ main.cpp -o disaster_management
-```
-
-### Run
-
-```bash
-./disaster_management
-```
-
-On Windows, run:
-
-```bash
-disaster_management.exe
-```
-
-*Replace `main.cpp` with the actual source filename if it is different.*
-
-## 💾 Data Storage
+## Data Storage
 
 The current implementation saves affected-person records to a text file. Loading previously saved data and persistent storage for all modules are not yet implemented.
 
-## 🚧 Future Enhancements
+## Future Enhancements
 
 - Implement Dijkstra's algorithm for shortest-path routing.
 - Improve emergency request management.
 - Add file loading and complete data persistence.
 - Enhance testing and error handling.
 - Expand route navigation and resource management.
-
-## 📚 References
-
-- [C++ Reference](https://en.cppreference.com/)
-- [cplusplus.com](https://cplusplus.com/)
-
----
-
-**Project:** Disaster Management System  
-**Team:** ShieldNova  
-**Team ID:** DSCPP-III-2026-T058

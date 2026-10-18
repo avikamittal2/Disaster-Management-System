@@ -30,9 +30,7 @@ int readInt(const string& prompt) {
     return val;
 }
 
-// ==========================================
 // 1. DATA MODELS / CLASSES
-// ==========================================
 
 class AffectedPerson {
 private:
@@ -91,6 +89,8 @@ struct Route {
     string destination;
     int distance;
 };
+
+/*3.Main System Controller*/
 class DisasterManagementSystem {
 private:
     DisasterModule disasterMod;

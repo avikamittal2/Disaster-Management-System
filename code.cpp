@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// --- UTILITY INPUT HELPERS ---
+
 void clearBuffer() {
     cin.clear();
     cin.ignore(1000, '\n');

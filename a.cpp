@@ -82,8 +82,8 @@ struct Resource {
 struct EmergencyRequest {
     string requestId;
     string complainantName;
-    string urgency; // High, Medium, Low
-    int priority;   // 3 for High, 2 for Medium, 1 for Low
+    string urgency; 
+    int priority;   
 };
 
 struct Route {

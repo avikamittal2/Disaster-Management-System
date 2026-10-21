@@ -37,7 +37,7 @@ A C++-based Disaster Management System developed as a Project-Based Learning (PB
 Register, update, and view disaster records.
 
 ### 2. Affected People Management
-Add affected-person details, search records by name, and update status.
+Add affected-person details, view records and update status.
 
 ### 3. Rescue Team Management
 Register and display rescue teams.

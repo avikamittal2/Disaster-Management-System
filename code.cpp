@@ -1,75 +1,24 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #include <fstream>
-#include <algorithm>
-
+#include <limits>
 using namespace std;
 
+const int MAX_LOCATIONS = 100;
 
-void clearBuffer() {
-    cin.clear();
-    cin.ignore(1000, '\n');
-}
-
-string readString(const string& prompt) {
-    cout << prompt;
-    string input;
-    getline(cin, input);
-    return input;
-}
-
-int readInt(const string& prompt) {
-    int val;
-    cout << prompt;
-    while (!(cin >> val)) {
-        cout << "Invalid number. Try again: ";
-        clearBuffer();
-    }
-    clearBuffer();
-    return val;
-}
-
-// 1. DATA MODELS / CLASSES
-
-class AffectedPerson {
-private:
+struct Person {
     string id, name, location, status;
-
-public:
-    AffectedPerson(string i, string n, string l, string s) 
-        : id(i), name(n), location(l), status(s) {}
-
-    string getId() const { return id; }
-    string getName() const { return name; }
-    string getLocation() const { return location; }
-    string getStatus() const { return status; }
-    void setStatus(const string& newStatus) { status = newStatus; }
-
-    void display() const {
-        cout << "[ID: " << id << "] Name: " << name 
-             << " | Location: " << location 
-             << " | Status: " << status << "\n";
-    }
+    Person* next;
 };
 
-class RescueTeam {
-private:
-    string id, name, specialization;
-
-public:
-    RescueTeam(string i, string n, string spec) 
-        : id(i), name(n), specialization(spec) {}
-
-    void display() const {
-        cout << "[Team ID: " << id << "] Name: " << name 
-             << " | Specialization: " << specialization << "\n";
-    }
+struct History {
+    string action;
+    History* next;
 };
 
-struct Disaster {
-    string id;
-    string details;
+struct Team {
+    string id, name, location, status;
 };
 
 struct Resource {
@@ -77,274 +26,337 @@ struct Resource {
     int quantity;
 };
 
-struct EmergencyRequest {
-    string requestId;
-    string complainantName;
-    string urgency; 
-    int priority;   
+struct Disaster {
+    string id, name, location, severity;
 };
 
-struct Route {
-    string source;
-    string destination;
-    int distance;
-}};
-
-// 2. CORE MODULES
-
-// Module 1: Disaster Management
-class DisasterModule {
-private:
-    vector<Disaster> disasters;
-
-public:
-    void registerDisaster(const string& id, const string& details) {
-        disasters.push_back({id, details});
-        cout << "--> Disaster registered: " << id << "\n";
-    }
-
-    void updateDisaster(const string& id, const string& newDetails) {
-        for (auto& d : disasters) {
-            if (d.id == id) {
-                d.details = newDetails;
-                cout << "--> Disaster updated successfully.\n";
-                return;
-            }
-        }
-        cout << "--> Disaster ID not found.\n";
-    }
-
-    void viewDisasters() const {
-        if (disasters.empty()) {
-            cout << "No active disasters.\n";
-            return;
-        }
-        cout << "\n--- ACTIVE DISASTERS ---\n";
-        for (const auto& d : disasters) {
-            cout << "ID: " << d.id << " | Details: " << d.details << "\n";
-        }
-    }
+struct Request {
+    string id, description, location, priority;
+    int priorityValue;
 };
 
-// Module 2: Resource Management
-class ResourceModule {
-private:
-    vector<Resource> inventory;
+// ==================== DISASTER MANAGEMENT SYSTEM ====================
 
-public:
-    void addResource(const string& name, int qty) {
-        for (auto& r : inventory) {
-            if (r.name == name) {
-                r.quantity += qty;
-                cout << "--> Updated stock. Total units of " << name << ": " << r.quantity << "\n";
-                return;
-            }
-        }
-        inventory.push_back({name, qty});
-        cout << "--> Added " << qty << " units of " << name << ".\n";
-    }
-
-    void allocateResource(const string& name, int qty) {
-        for (auto& r : inventory) {
-            if (r.name == name) {
-                if (r.quantity >= qty) {
-                    r.quantity -= qty;
-                    cout << "--> Allocated " << qty << " units of " << name << ".\n";
-                } else {
-                    cout << "--> Error: Insufficient inventory.\n";
-                }
-                return;
-            }
-        }
-        cout << "--> Resource not found.\n";
-    }
-
-    void displayResources() const {
-        if (inventory.empty()) {
-            cout << "Inventory is empty.\n";
-            return;
-        }
-        cout << "\n--- RESOURCE INVENTORY ---\n";
-        for (const auto& r : inventory) {
-            cout << "Resource: " << r.name << " | Available: " << r.quantity << "\n";
-        }
-    }
-};
-
-// Module 3: Emergency Requests (Priority handling using simple vector sorting)
-class EmergencyRequestModule {
-private:
-    vector<EmergencyRequest> requests;
-
-public:
-    void pushRequest(const string& id, const string& name, const string& urgency) {
-        int weight = 1;
-        if (urgency == "High" || urgency == "high") weight = 3;
-        else if (urgency == "Medium" || urgency == "medium") weight = 2;
-
-        requests.push_back({id, name, urgency, weight});
-        
-        // Sort vector so highest priority stays at the front
-        sort(requests.begin(), requests.end(), [](const EmergencyRequest& a, const EmergencyRequest& b) {
-            return a.priority > b.priority;
-        });
-
-        cout << "--> Request logged for " << name << ".\n";
-    }
-
-    void processNextRequest() {
-        if (requests.empty()) {
-            cout << "No pending emergency requests.\n";
-            return;
-        }
-        EmergencyRequest req = requests.front();
-        requests.erase(requests.begin()); 
-
-        cout << "--> Processing Request ID: " << req.requestId 
-             << " | From: " << req.complainantName 
-             << " | Urgency: " << req.urgency << "\n";
-    }
-
-    void viewPendingRequests() const {
-        if (requests.empty()) {
-            cout << "Queue is empty.\n";
-            return;
-        }
-        cout << "\n--- PENDING EMERGENCY REQUESTS ---\n";
-        for (const auto& r : requests) {
-            cout << "ID: " << r.requestId << " | Name: " << r.complainantName 
-                 << " | Urgency: " << r.urgency << "\n";
-        }
-    }
-};
-
-// Module 4: Route Navigation
-class RouteModule {
-private:
-    vector<Route> routes;
-
-public:
-    void addRoute(const string& u, const string& v, int distance) {
-        routes.push_back({u, v, distance});
-        cout << "--> Route added between " << u << " and " << v << " (" << distance << " km)\n";
-    }
-
-    void findShortestPath(const string& start, const string& target) const {
-        for (const auto& r : routes) {
-            if ((r.source == start && r.destination == target) || 
-                (r.source == target && r.destination == start)) {
-                cout << "\n--- ROUTE FOUND ---\n";
-                cout << "Direct Distance: " << r.distance << " km\n";
-                cout << "Path: " << start << " -> " << target << "\n";
-                return;
-            }
-        }
-        cout << "No direct route found between " << start << " and " << target << ".\n";
-    }
-};
-
-// Module 5: Audit History Logging
-class HistoryModule {
-private:
-    vector<string> historyLogs;
-
-public:
-    void logAction(const string& action) {
-        historyLogs.push_back(action);
-    }
-
-    void viewHistory() const {
-        if (historyLogs.empty()) {
-            cout << "No actions recorded yet.\n";
-            return;
-        }
-        cout << "\n--- ACTION HISTORY LOGS ---\n";
-        for (int i = historyLogs.size() - 1; i >= 0; --i) {
-            cout << "- " << historyLogs[i] << "\n";
-        }
-    }
-};
-
-/*3.Main System Controller*/
 class DisasterManagementSystem {
 private:
-    DisasterModule disasterMod;
-    ResourceModule resourceMod;
-    EmergencyRequestModule requestMod;
-    RouteModule routeMod;
-    HistoryModule historyMod;
-    
-    vector<AffectedPerson> affectedPeople;
-    vector<RescueTeam> rescueTeams;
+    Person* peopleHead;
+    History* historyTop;
+
+    vector<Disaster> disasters;
+    vector<Team> teams;
+    vector<Resource> resources;
+    vector<Request> requests;
+
+    vector<string> locations;
+    vector<pair<int, int> > graph[MAX_LOCATIONS];
+
+    void pushHistory(string action) {
+        History* temp = new History;
+        temp->action = action;
+        temp->next = historyTop;
+        historyTop = temp;
+    }
+
+    int findLocation(string name) {
+        for (int i = 0; i < (int)locations.size(); i++) {
+            if (locations[i] == name)
+                return i;
+        }
+        return -1;
+    }
+
+    int getOrAddLocation(string name) {
+        int index = findLocation(name);
+
+        if (index != -1)
+            return index;
+
+        if ((int)locations.size() >= MAX_LOCATIONS) {
+            cout << "Maximum number of locations reached.\n";
+            return -1;
+        }
+
+        locations.push_back(name);
+        return (int)locations.size() - 1;
+    }
+
+    int priorityNumber(string priority) {
+        if (priority == "High" || priority == "high" ||
+            priority == "HIGH")
+            return 3;
+
+        if (priority == "Medium" || priority == "medium" ||
+            priority == "MEDIUM")
+            return 2;
+
+        return 1;
+    }
 
 public:
-    void addAffectedPerson(string id, string name, string loc, string status) {
-        affectedPeople.push_back(AffectedPerson(id, name, loc, status));
-        historyMod.logAction("Added affected person: " + name);
-        cout << "--> Affected person registered successfully.\n";
+    DisasterManagementSystem() {
+        peopleHead = NULL;
+        historyTop = NULL;
     }
 
-    void searchAffectedPerson(const string& nameQuery) const {
-        cout << "\n--- SEARCH RESULTS FOR: " << nameQuery << " ---\n";
-        bool found = false;
-        for (const auto& person : affectedPeople) {
-            if (person.getName().find(nameQuery) != string::npos) {
-                person.display();
-                found = true;
+
+    ~DisasterManagementSystem() {
+        while (peopleHead != NULL) {
+            Person* temp = peopleHead;
+            peopleHead = peopleHead->next;
+            delete temp;
+        }
+
+        while (historyTop != NULL) {
+            History* temp = historyTop;
+            historyTop = historyTop->next;
+            delete temp;
+        }
+    }
+
+
+    // ==================================================
+    // MODULE 1: DISASTER MANAGEMENT RECORD
+    // ==================================================
+
+    void addDisaster() {
+        Disaster d;
+
+        cout << "Enter Disaster ID: ";
+        cin >> d.id;
+
+        for (int i = 0; i < (int)disasters.size(); i++) {
+            if (disasters[i].id == d.id) {
+                cout << "A disaster with this ID already exists.\n";
+                return;
             }
         }
-        if (!found) cout << "No matching records found.\n";
+
+        cout << "Enter disaster name/type: ";
+        cin >> ws;
+        getline(cin, d.name);
+
+        cout << "Enter location: ";
+        getline(cin, d.location);
+
+        cout << "Enter severity (Low/Medium/High): ";
+        getline(cin, d.severity);
+
+        disasters.push_back(d);
+
+        pushHistory("Registered disaster: " + d.id);
+
+        cout << "Disaster record added successfully.\n";
     }
 
-    void updatePersonStatus(const string& idOrName, const string& newStatus) {
-        bool found = false;
-        for (auto& person : affectedPeople) {
-            if (person.getId() == idOrName || person.getName() == idOrName) {
-                person.setStatus(newStatus);
-                cout << "--> Updated status for " << person.getName() << " to: " << newStatus << "\n";
-                historyMod.logAction("Updated status of " + person.getName() + " to " + newStatus);
-                found = true;
-                break;
+    
+    void updateDisaster() {
+        if (disasters.empty()) {
+            cout << "No disaster records available to update.\n";
+            return;
+        }
+
+        string id;
+
+        cout << "Enter Disaster ID to update: ";
+        cin >> id;
+
+        for (int i = 0; i < (int)disasters.size(); i++) {
+            if (disasters[i].id == id) {
+                cout << "\nExisting Disaster Details:\n";
+                cout << "Name: " << disasters[i].name << "\n";
+                cout << "Location: " << disasters[i].location << "\n";
+                cout << "Severity: " << disasters[i].severity << "\n";
+
+                cout << "\nEnter new disaster name/type: ";
+                cin >> ws;
+                getline(cin, disasters[i].name);
+
+                cout << "Enter new location: ";
+                getline(cin, disasters[i].location);
+
+                cout << "Enter new severity (Low/Medium/High): ";
+                getline(cin, disasters[i].severity);
+
+                pushHistory("Updated disaster: " + id);
+
+                cout << "Disaster record updated successfully.\n";
+                return;
             }
         }
-        if (!found) cout << "--> Person not found.\n";
+
+        cout << "Disaster ID not found.\n";
     }
 
-    void addRescueTeam(string id, string name, string spec) {
-        rescueTeams.push_back(RescueTeam(id, name, spec));
-        historyMod.logAction("Registered rescue team: " + name);
-        cout << "--> Rescue team registered.\n";
-    }
-
-    void displayAllTeams() const {
-        if (rescueTeams.empty()) {
-            cout << "\nNo rescue teams registered.\n";
+    void viewDisasters() {
+        if (disasters.empty()) {
+            cout << "No disaster records found.\n";
             return;
         }
-        cout << "\n--- RESCUE TEAMS LIST ---\n";
-        for (const auto& team : rescueTeams) {
-            team.display();
+
+        cout << "\n--- Disaster Records ---\n";
+
+        for (int i = 0; i < (int)disasters.size(); i++) {
+            cout << "\nDisaster ID: " << disasters[i].id
+                 << "\nName/Type: " << disasters[i].name
+                 << "\nLocation: " << disasters[i].location
+                 << "\nSeverity: " << disasters[i].severity << "\n";
         }
     }
 
-    void saveDataToFile() {
-        ofstream outFile("disaster_system_data.txt");
-        if (!outFile) {
-            cout << "Error opening file for writing!\n";
+    
+    void addAffectedPerson() {
+        Person* temp = new Person;
+
+        cout << "Enter Person ID: ";
+        cin >> temp->id;
+
+        cout << "Enter name: ";
+        cin >> ws;
+        getline(cin, temp->name);
+
+        cout << "Enter location: ";
+        getline(cin, temp->location);
+
+        cout << "Enter status (Missing/Rescued/Injured): ";
+        getline(cin, temp->status);
+
+        temp->next = NULL;
+
+        if (peopleHead == NULL) {
+            peopleHead = temp;
+        } else {
+            Person* current = peopleHead;
+
+            while (current->next != NULL)
+                current = current->next;
+
+            current->next = temp;
+        }
+
+        pushHistory("Added affected person: " + temp->id);
+
+        cout << "Affected person record added.\n";
+    }
+
+    void viewAffectedPeople() {
+        if (peopleHead == NULL) {
+            cout << "No affected-person records found.\n";
             return;
         }
-        outFile << "--- AFFECTED PEOPLE ---\n";
-        for (const auto& p : affectedPeople) {
-            outFile << p.getId() << "," << p.getName() << "," << p.getLocation() << "," << p.getStatus() << "\n";
+
+        Person* current = peopleHead;
+
+        cout << "\n--- Affected People ---\n";
+
+        while (current != NULL) {
+            cout << "\nID: " << current->id
+                 << "\nName: " << current->name
+                 << "\nLocation: " << current->location
+                 << "\nStatus: " << current->status << "\n";
+
+            current = current->next;
         }
-        outFile.close();
-        cout << "--> Data saved to 'disaster_system_data.txt'.\n";
-        historyMod.logAction("Data saved to file.");
     }
 
-    DisasterModule& getDisasterMod() { return disasterMod; }
-    ResourceModule& getResourceMod() { return resourceMod; }
-    EmergencyRequestModule& getRequestMod() { return requestMod; }
-    RouteModule& getRouteMod() { return routeMod; }
-    HistoryModule& getHistoryMod() { return historyMod; }
-};
+    void updatePersonStatus() {
+        if (peopleHead == NULL) {
+            cout << "No affected-person records found.\n";
+            return;
+        }
+
+        string id;
+
+        cout << "Enter Person ID: ";
+        cin >> id;
+
+        Person* current = peopleHead;
+
+        while (current != NULL) {
+            if (current->id == id) {
+                cout << "Enter updated status: ";
+                cin >> ws;
+                getline(cin, current->status);
+
+                pushHistory("Updated status for person: " + id);
+
+                cout << "Person status updated.\n";
+                return;
+            }
+
+            current = current->next;
+        }
+
+        cout << "Person ID not found.\n";
+    }
+
+    void addTeam() {
+        Team t;
+
+        cout << "Enter Team ID: ";
+        cin >> t.id;
+
+        cout << "Enter team name: ";
+        cin >> ws;
+        getline(cin, t.name);
+
+        cout << "Enter team location: ";
+        getline(cin, t.location);
+
+        cout << "Enter team status (Available/Busy): ";
+        getline(cin, t.status);
+
+        teams.push_back(t);
+
+        pushHistory("Added rescue team: " + t.id);
+
+        cout << "Rescue team added successfully.\n";
+    }
+
+    void viewTeams() {
+        if (teams.empty()) {
+            cout << "No rescue teams found.\n";
+            return;
+        }
+
+        cout << "\n--- Rescue Teams ---\n";
+
+        for (int i = 0; i < (int)teams.size(); i++) {
+            cout << "\nTeam ID: " << teams[i].id
+                 << "\nName: " << teams[i].name
+                 << "\nLocation: " << teams[i].location
+                 << "\nStatus: " << teams[i].status << "\n";
+        }
+    }
+
+    void disasterModule() {
+        int choice;
+
+        do {
+            cout << "\n===== MODULE 1: DISASTER MANAGEMENT RECORD =====\n";
+            cout << "1. Register Disaster\n";
+            cout << "2. Update Disaster\n";
+            cout << "3. View Disasters\n";
+            cout << "4. Add Affected Person\n";
+            cout << "5. View Affected People\n";
+            cout << "6. Update Person Status\n";
+            cout << "7. Add Rescue Team\n";
+            cout << "8. View Rescue Teams\n";
+            cout << "0. Back to Main Menu\n";
+            cout << "Enter choice: ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1: addDisaster(); break;
+                case 2: updateDisaster(); break;
+                case 3: viewDisasters(); break;
+                case 4: addAffectedPerson(); break;
+                case 5: viewAffectedPeople(); break;
+                case 6: updatePersonStatus(); break;
+                case 7: addTeam(); break;
+                case 8: viewTeams(); break;
+                case 0: break;
+                default: cout << "Invalid choice.\n";
+            }
+
+        } while (choice != 0);
+    }

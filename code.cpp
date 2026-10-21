@@ -481,41 +481,6 @@ public:
         } while (choice != 0);
     }
 
-
-   /* MAIN MENU */
-
-
-int main() {
-    DisasterManagementSystem system;
-    int choice;
-
-    do {
-        cout << "\n========================================\n";
-        cout << "       DISASTER MANAGEMENT SYSTEM\n";
-        cout << "========================================\n";
-        cout << "1. Disaster Management Record\n";
-        cout << "2. Resource Management\n";
-        cout << "3. Emergency Request\n";
-        cout << "4. Route Navigation\n";
-        cout << "5. Audit History\n";
-        cout << "0. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1: system.disasterModule(); break;
-            case 2: system.resourceModule(); break;
-            case 3: system.emergencyModule(); break;
-            case 4: system.routeModule(); break;
-            case 5: system.auditModule(); break;
-            case 0: cout << "Exiting system. Stay safe!\n"; break;
-            default: cout << "Invalid choice. Please try again.\n";
-        }
-
-    } while (choice != 0);
-
-    return 0;
-}
     // MODULE 3: EMERGENCY REQUEST
 
     void addRequest() {
@@ -614,3 +579,134 @@ int main() {
 
         } while (choice != 0);
     }
+
+
+    /* MODULE 5: AUDIT HISTORY */
+   
+
+    void viewHistory() {
+        if (historyTop == NULL) {
+            cout << "No audit history available.\n";
+            return;
+        }
+
+        History* current = historyTop;
+
+        cout << "\n--- Audit History (Latest First) ---\n";
+
+        while (current != NULL) {
+            cout << "- " << current->action << "\n";
+            current = current->next;
+        }
+    }
+
+    void saveDataToFile() {
+        ofstream file("disaster_data.txt");
+
+        if (!file) {
+            cout << "Unable to open file for saving.\n";
+            return;
+        }
+
+        file << "DISASTER RECORDS\n";
+
+        for (int i = 0; i < (int)disasters.size(); i++) {
+            file << disasters[i].id << " | "
+                 << disasters[i].name << " | "
+                 << disasters[i].location << " | "
+                 << disasters[i].severity << "\n";
+        }
+
+        file << "\nAFFECTED PEOPLE\n";
+
+        Person* current = peopleHead;
+
+        while (current != NULL) {
+            file << current->id << " | "
+                 << current->name << " | "
+                 << current->location << " | "
+                 << current->status << "\n";
+
+            current = current->next;
+        }
+
+        file << "\nRESCUE TEAMS\n";
+
+        for (int i = 0; i < (int)teams.size(); i++) {
+            file << teams[i].id << " | "
+                 << teams[i].name << " | "
+                 << teams[i].location << " | "
+                 << teams[i].status << "\n";
+        }
+
+        file << "\nRESOURCES\n";
+
+        for (int i = 0; i < (int)resources.size(); i++) {
+            file << resources[i].name << " | "
+                 << resources[i].quantity << "\n";
+        }
+
+        file.close();
+
+        pushHistory("Saved system data to file");
+
+        cout << "Data saved to disaster_data.txt\n";
+    }
+
+    void auditModule() {
+        int choice;
+
+        do {
+            cout << "\n===== MODULE 5: AUDIT HISTORY =====\n";
+            cout << "1. View Audit History\n";
+            cout << "2. Save Data to File\n";
+            cout << "0. Back to Main Menu\n";
+            cout << "Enter choice: ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1: viewHistory(); break;
+                case 2: saveDataToFile(); break;
+                case 0: break;
+                default: cout << "Invalid choice.\n";
+            }
+
+        } while (choice != 0);
+    }
+};
+
+
+  /* MAIN MENU */
+
+
+int main() {
+    DisasterManagementSystem system;
+    int choice;
+
+    do {
+        cout << "\n========================================\n";
+        cout << "       DISASTER MANAGEMENT SYSTEM\n";
+        cout << "========================================\n";
+        cout << "1. Disaster Management Record\n";
+        cout << "2. Resource Management\n";
+        cout << "3. Emergency Request\n";
+        cout << "4. Route Navigation\n";
+        cout << "5. Audit History\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: system.disasterModule(); break;
+            case 2: system.resourceModule(); break;
+            case 3: system.emergencyModule(); break;
+            case 4: system.routeModule(); break;
+            case 5: system.auditModule(); break;
+            case 0: cout << "Exiting system. Stay safe!\n"; break;
+            default: cout << "Invalid choice. Please try again.\n";
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}

@@ -67,19 +67,21 @@ Save affected-person records in a text file named `disaster_system_data.txt`.
 - Object-Oriented Programming (OOP)
 - Classes and Objects
 - Encapsulation
-- Structures
-- Vectors
-- Searching
-- Sorting
+- Structures and Pointers
+- Vectors and Linked Lists
+- Graphs and Adjacency Lists
+- Searching and Bubble Sort
+- Dijkstra’s Shortest-Path Algorithm
+- Stack (Audit History)
 - Input Validation
 - File Handling
 
 ## Technology Stack
 
 - **Language:** C++
-- **Libraries:** iostream, vector, string, fstream, algorithm
+- **Libraries:** `iostream`, `string`, `vector`, `fstream`, `limits`
 - **Tools:** VS Code / Code::Blocks
-- **Version Control:** Git and GitHub
+- **Version Control:** Git and GitHub (if used)
 
 ## How to Run
 

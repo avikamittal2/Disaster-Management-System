@@ -516,9 +516,7 @@ int main() {
 
     return 0;
 }
-// ==================================================
     // MODULE 3: EMERGENCY REQUEST
-    // ==================================================
 
     void addRequest() {
         Request r;
@@ -540,8 +538,6 @@ int main() {
 
         requests.push_back(r);
 
-        // Sort requests by priority, highest first.
-        // Equal-priority requests keep their registration order.
         for (int i = 0; i < (int)requests.size() - 1; i++) {
             for (int j = 0; j < (int)requests.size() - i - 1; j++) {
                 if (requests[j].priorityValue <

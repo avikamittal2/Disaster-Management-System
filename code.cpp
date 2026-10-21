@@ -114,9 +114,9 @@ public:
     }
 
 
-    // ==================================================
-    // MODULE 1: DISASTER MANAGEMENT RECORD
-    // ==================================================
+   
+    /* MODULE 1: DISASTER MANAGEMENT RECORD */
+    
 
     void addDisaster() {
         Disaster d;
@@ -360,3 +360,159 @@ public:
 
         } while (choice != 0);
     }
+
+
+    /* MODULE 2: RESOURCE MANAGEMENT */
+   
+
+    void addResource() {
+        string name;
+        int quantity;
+
+        cout << "Enter resource name: ";
+        cin >> ws;
+        getline(cin, name);
+
+        cout << "Enter quantity to add: ";
+        cin >> quantity;
+
+        if (quantity <= 0) {
+            cout << "Quantity must be greater than zero.\n";
+            return;
+        }
+
+        for (int i = 0; i < (int)resources.size(); i++) {
+            if (resources[i].name == name) {
+                resources[i].quantity += quantity;
+
+                pushHistory("Added stock of resource: " + name);
+
+                cout << "Resource stock updated.\n";
+                return;
+            }
+        }
+
+        Resource r;
+        r.name = name;
+        r.quantity = quantity;
+
+        resources.push_back(r);
+
+        pushHistory("Added resource: " + name);
+
+        cout << "Resource added successfully.\n";
+    }
+
+    void allocateResource() {
+        if (resources.empty()) {
+            cout << "No resources available.\n";
+            return;
+        }
+
+        string name;
+        int quantity;
+
+        cout << "Enter resource name to allocate: ";
+        cin >> ws;
+        getline(cin, name);
+
+        cout << "Enter quantity to allocate: ";
+        cin >> quantity;
+
+        if (quantity <= 0) {
+            cout << "Quantity must be greater than zero.\n";
+            return;
+        }
+
+        for (int i = 0; i < (int)resources.size(); i++) {
+            if (resources[i].name == name) {
+                if (resources[i].quantity >= quantity) {
+                    resources[i].quantity -= quantity;
+
+                    pushHistory("Allocated resource: " + name);
+
+                    cout << "Resource allocated successfully.\n";
+                } else {
+                    cout << "Insufficient stock. Available quantity: "
+                         << resources[i].quantity << "\n";
+                }
+
+                return;
+            }
+        }
+
+        cout << "Resource not found.\n";
+    }
+
+    void viewResources() {
+        if (resources.empty()) {
+            cout << "No resources found.\n";
+            return;
+        }
+
+        cout << "\n--- Available Resource Stock ---\n";
+
+        for (int i = 0; i < (int)resources.size(); i++) {
+            cout << resources[i].name << " : "
+                 << resources[i].quantity << "\n";
+        }
+    }
+
+    void resourceModule() {
+        int choice;
+
+        do {
+            cout << "\n===== MODULE 2: RESOURCE MANAGEMENT =====\n";
+            cout << "1. Add Resource / Stock\n";
+            cout << "2. Allocate Resource\n";
+            cout << "3. View Stock\n";
+            cout << "0. Back to Main Menu\n";
+            cout << "Enter choice: ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1: addResource(); break;
+                case 2: allocateResource(); break;
+                case 3: viewResources(); break;
+                case 0: break;
+                default: cout << "Invalid choice.\n";
+            }
+
+        } while (choice != 0);
+    }
+
+
+   /* MAIN MENU */
+
+
+int main() {
+    DisasterManagementSystem system;
+    int choice;
+
+    do {
+        cout << "\n========================================\n";
+        cout << "       DISASTER MANAGEMENT SYSTEM\n";
+        cout << "========================================\n";
+        cout << "1. Disaster Management Record\n";
+        cout << "2. Resource Management\n";
+        cout << "3. Emergency Request\n";
+        cout << "4. Route Navigation\n";
+        cout << "5. Audit History\n";
+        cout << "0. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: system.disasterModule(); break;
+            case 2: system.resourceModule(); break;
+            case 3: system.emergencyModule(); break;
+            case 4: system.routeModule(); break;
+            case 5: system.auditModule(); break;
+            case 0: cout << "Exiting system. Stay safe!\n"; break;
+            default: cout << "Invalid choice. Please try again.\n";
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}

@@ -16,10 +16,10 @@ A C++-based Disaster Management System developed as a Project-Based Learning (PB
 
 | Name | Role |
 |---|---|
-| Avika Mittal | Data Structures and Classes |
-| Avni Khandelwal | Core Modules |
-| Aryan Gautam | Main System Controller |
-| Gaurav Singh Negi | Program Entry Point |
+| Avika Mittal | System and Disaster Records Developer |
+| Avni Khandelwal | Resource Management Developer |
+| Aryan Gautam | Emergency Response Developer |
+| Gaurav Singh Negi | Audit and Integration Developer |
 
 ## Objectives
 

@@ -81,7 +81,7 @@ Save affected-person records in a text file named `disaster_system_data.txt`.
 - **Language:** C++
 - **Libraries:** `iostream`, `string`, `vector`, `fstream`, `limits`
 - **Tools:** VS Code / Code::Blocks
-- **Version Control:** Git and GitHub (if used)
+- **Version Control:** Git/GitHub
 
 ## How to Run
 

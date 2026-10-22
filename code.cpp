@@ -33,7 +33,7 @@ struct Request {
     int priorityValue;
 };
 
-// ==================== DISASTER MANAGEMENT SYSTEM ====================
+
 
 class DisasterManagementSystem {
 private:
@@ -88,7 +88,6 @@ public:
 
    
     /* MODULE 1: DISASTER MANAGEMENT RECORD */
-    
 
     void addDisaster() {
         Disaster d;
@@ -196,7 +195,8 @@ public:
 
         if (peopleHead == NULL) {
             peopleHead = temp;
-        } else {
+        } 
+        else {
             Person* current = peopleHead;
 
             while (current->next != NULL)
@@ -334,8 +334,8 @@ public:
     }
 
 
+
     /* MODULE 2: RESOURCE MANAGEMENT */
-   
 
     void addResource() {
         string name;
@@ -452,6 +452,7 @@ public:
 
         } while (choice != 0);
     }
+
 
     // MODULE 3: EMERGENCY REQUEST
 
@@ -672,7 +673,7 @@ int main() {
             case 1: system.disasterModule(); break;
             case 2: system.resourceModule(); break;
             case 3: system.emergencyModule(); break;
-            case 4: printf("Pending\n"); break();
+            case 4: cout<<"Pending\n"; break();
             case 5: system.auditModule(); break;
             case 0: cout << "Exiting system. Stay safe!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";

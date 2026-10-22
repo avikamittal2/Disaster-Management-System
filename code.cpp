@@ -5,8 +5,6 @@
 #include <limits>
 using namespace std;
 
-const int MAX_LOCATIONS = 100;
-
 struct Person {
     string id, name, location, status;
     Person* next;
@@ -47,37 +45,11 @@ private:
     vector<Resource> resources;
     vector<Request> requests;
 
-    vector<string> locations;
-    vector<pair<int, int> > graph[MAX_LOCATIONS];
-
     void pushHistory(string action) {
         History* temp = new History;
         temp->action = action;
         temp->next = historyTop;
         historyTop = temp;
-    }
-
-    int findLocation(string name) {
-        for (int i = 0; i < (int)locations.size(); i++) {
-            if (locations[i] == name)
-                return i;
-        }
-        return -1;
-    }
-
-    int getOrAddLocation(string name) {
-        int index = findLocation(name);
-
-        if (index != -1)
-            return index;
-
-        if ((int)locations.size() >= MAX_LOCATIONS) {
-            cout << "Maximum number of locations reached.\n";
-            return -1;
-        }
-
-        locations.push_back(name);
-        return (int)locations.size() - 1;
     }
 
     int priorityNumber(string priority) {
@@ -700,7 +672,7 @@ int main() {
             case 1: system.disasterModule(); break;
             case 2: system.resourceModule(); break;
             case 3: system.emergencyModule(); break;
-            case 4: system.routeModule(); break;
+            case 4: printf("Pending\n"); break();
             case 5: system.auditModule(); break;
             case 0: cout << "Exiting system. Stay safe!\n"; break;
             default: cout << "Invalid choice. Please try again.\n";

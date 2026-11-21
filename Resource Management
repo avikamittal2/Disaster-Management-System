@@ -96,7 +96,7 @@
     void resourceModule() {
         int choice;
 
-        do {
+        do  {
             cout << "\n===== MODULE 2: RESOURCE MANAGEMENT =====\n";
             cout << "1. Add Resource / Stock\n";
             cout << "2. Allocate Resource\n";

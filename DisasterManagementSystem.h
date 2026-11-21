@@ -1,3 +1,4 @@
+/* Disaster Management Header File */
 #ifndef DISASTER_MANAGEMENT_SYSTEM_H
 #define DISASTER_MANAGEMENT_SYSTEM_H
 

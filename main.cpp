@@ -1,3 +1,4 @@
+/* Main File */
 #include "DisasterManagementSystem.h"
 
 int main() {

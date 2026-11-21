@@ -6,7 +6,7 @@
 using namespace std;
 
 struct Person {
-    string id, name, location, status;
+    string id, name, location, status ;
     Person* next;
 };
 

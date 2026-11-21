@@ -1,89 +1,239 @@
 #include "DisasterManagementSystem.h"
 
-void DisasterManagementSystem::addRequest() {
-    Request r;
+void DisasterManagementSystem::addDisaster() {
+    Disaster d;
 
-    cout << "Enter Request ID: ";
-    cin >> r.id;
+    cout << "Enter Disaster ID: ";
+    cin >> d.id;
 
-    cout << "Enter request description: ";
+    for (int i = 0; i < (int)disasters.size(); i++) {
+        if (disasters[i].id == d.id) {
+            cout << "A disaster with this ID already exists.\n";
+            return;
+        }
+    }
+
+    cout << "Enter disaster name/type: ";
     cin >> ws;
-    getline(cin, r.description);
+    getline(cin, d.name);
 
-    cout << "Enter request location: ";
-    getline(cin, r.location);
+    cout << "Enter location: ";
+    getline(cin, d.location);
 
-    cout << "Enter priority (High/Medium/Low): ";
-    getline(cin, r.priority);
+    cout << "Enter severity (Low/Medium/High): ";
+    getline(cin, d.severity);
 
-    r.priorityValue = priorityNumber(r.priority);
-    r.sequence = requestCounter++;
+    disasters.push_back(d);
 
-    requests.push(r);
+    pushHistory("Registered disaster: " + d.id);
 
-    pushHistory("Added emergency request: " + r.id);
-
-    cout << "Emergency request added and prioritized.\n";
+    cout << "Disaster record added successfully.\n";
 }
 
-void DisasterManagementSystem::viewRequests() {
-    if (requests.empty()) {
-        cout << "No emergency requests found.\n";
+void DisasterManagementSystem::updateDisaster() {
+    if (disasters.empty()) {
+        cout << "No disaster records available to update.\n";
         return;
     }
 
-    cout << "\n--- Emergency Requests (Highest Priority First) ---\n";
+    string id;
 
-    priority_queue<Request, vector<Request>, CompareRequest> tempQueue = requests;
+    cout << "Enter Disaster ID to update: ";
+    cin >> id;
 
-    while (!tempQueue.empty()) {
-        Request current = tempQueue.top();
-        tempQueue.pop();
+    for (int i = 0; i < (int)disasters.size(); i++) {
+        if (disasters[i].id == id) {
+            cout << "\nExisting Disaster Details:\n";
+            cout << "Name: " << disasters[i].name << "\n";
+            cout << "Location: " << disasters[i].location << "\n";
+            cout << "Severity: " << disasters[i].severity << "\n";
 
-        cout << "\nRequest ID: " << current.id
-             << "\nDescription: " << current.description
-             << "\nLocation: " << current.location
-             << "\nPriority: " << current.priority << "\n";
+            cout << "\nEnter new disaster name/type: ";
+            cin >> ws;
+            getline(cin, disasters[i].name);
+
+            cout << "Enter new location: ";
+            getline(cin, disasters[i].location);
+
+            cout << "Enter new severity (Low/Medium/High): ";
+            getline(cin, disasters[i].severity);
+
+            pushHistory("Updated disaster: " + id);
+
+            cout << "Disaster record updated successfully.\n";
+            return;
+        }
     }
+
+    cout << "Disaster ID not found.\n";
 }
 
-void DisasterManagementSystem::processRequest() {
-    if (requests.empty()) {
-        cout << "No pending emergency requests.\n";
+void DisasterManagementSystem::viewDisasters() {
+    if (disasters.empty()) {
+        cout << "No disaster records found.\n";
         return;
     }
 
-    Request topRequest = requests.top();
+    cout << "\n--- Disaster Records ---\n";
 
-    cout << "\nProcessing highest-priority request:\n";
-    cout << "Request ID: " << topRequest.id << "\n";
-    cout << "Description: " << topRequest.description << "\n";
-    cout << "Location: " << topRequest.location << "\n";
-    cout << "Priority: " << topRequest.priority << "\n";
-
-    requests.pop();
-
-    pushHistory("Processed emergency request: " + topRequest.id);
-
-    cout << "Request processed successfully.\n";
+    for (int i = 0; i < (int)disasters.size(); i++) {
+        cout << "\nDisaster ID: " << disasters[i].id
+             << "\nName/Type: " << disasters[i].name
+             << "\nLocation: " << disasters[i].location
+             << "\nSeverity: " << disasters[i].severity << "\n";
+    }
 }
 
-void DisasterManagementSystem::emergencyModule() {
+void DisasterManagementSystem::addAffectedPerson() {
+    Person* temp = new Person;
+
+    cout << "Enter Person ID: ";
+    cin >> temp->id;
+
+    cout << "Enter name: ";
+    cin >> ws;
+    getline(cin, temp->name);
+
+    cout << "Enter location: ";
+    getline(cin, temp->location);
+
+    cout << "Enter status (Missing/Rescued/Injured): ";
+    getline(cin, temp->status);
+
+    temp->next = NULL;
+
+    if (peopleHead == NULL) {
+        peopleHead = temp;
+    } else {
+        Person* current = peopleHead;
+
+        while (current->next != NULL)
+            current = current->next;
+
+        current->next = temp;
+    }
+
+    pushHistory("Added affected person: " + temp->id);
+
+    cout << "Affected person record added.\n";
+}
+
+void DisasterManagementSystem::viewAffectedPeople() {
+    if (peopleHead == NULL) {
+        cout << "No affected-person records found.\n";
+        return;
+    }
+
+    Person* current = peopleHead;
+
+    cout << "\n--- Affected People ---\n";
+
+    while (current != NULL) {
+        cout << "\nID: " << current->id
+             << "\nName: " << current->name
+             << "\nLocation: " << current->location
+             << "\nStatus: " << current->status << "\n";
+
+        current = current->next;
+    }
+}
+
+void DisasterManagementSystem::updatePersonStatus() {
+    if (peopleHead == NULL) {
+        cout << "No affected-person records found.\n";
+        return;
+    }
+
+    string id;
+
+    cout << "Enter Person ID: ";
+    cin >> id;
+
+    Person* current = peopleHead;
+
+    while (current != NULL) {
+        if (current->id == id) {
+            cout << "Enter updated status: ";
+            cin >> ws;
+            getline(cin, current->status);
+
+            pushHistory("Updated status for person: " + id);
+
+            cout << "Person status updated.\n";
+            return;
+        }
+
+        current = current->next;
+    }
+
+    cout << "Person ID not found.\n";
+}
+
+void DisasterManagementSystem::addTeam() {
+    Team t;
+
+    cout << "Enter Team ID: ";
+    cin >> t.id;
+
+    cout << "Enter team name: ";
+    cin >> ws;
+    getline(cin, t.name);
+
+    cout << "Enter team location: ";
+    getline(cin, t.location);
+
+    cout << "Enter team status (Available/Busy): ";
+    getline(cin, t.status);
+
+    teams.push_back(t);
+
+    pushHistory("Added rescue team: " + t.id);
+
+    cout << "Rescue team added successfully.\n";
+}
+
+void DisasterManagementSystem::viewTeams() {
+    if (teams.empty()) {
+        cout << "No rescue teams found.\n";
+        return;
+    }
+
+    cout << "\n--- Rescue Teams ---\n";
+
+    for (int i = 0; i < (int)teams.size(); i++) {
+        cout << "\nTeam ID: " << teams[i].id
+             << "\nName: " << teams[i].name
+             << "\nLocation: " << teams[i].location
+             << "\nStatus: " << teams[i].status << "\n";
+    }
+}
+
+void DisasterManagementSystem::disasterModule() {
     int choice;
 
     do {
-        cout << "\n===== MODULE 3: EMERGENCY REQUEST =====\n";
-        cout << "1. Add Emergency Request\n";
-        cout << "2. View Pending Requests\n";
-        cout << "3. Process Highest-Priority Request\n";
+        cout << "\n===== MODULE 1: DISASTER MANAGEMENT RECORD =====\n";
+        cout << "1. Register Disaster\n";
+        cout << "2. Update Disaster\n";
+        cout << "3. View Disasters\n";
+        cout << "4. Add Affected Person\n";
+        cout << "5. View Affected People\n";
+        cout << "6. Update Person Status\n";
+        cout << "7. Add Rescue Team\n";
+        cout << "8. View Rescue Teams\n";
         cout << "0. Back to Main Menu\n";
         cout << "Enter choice: ";
         cin >> choice;
 
         switch (choice) {
-            case 1: addRequest(); break;
-            case 2: viewRequests(); break;
-            case 3: processRequest(); break;
+            case 1: addDisaster(); break;
+            case 2: updateDisaster(); break;
+            case 3: viewDisasters(); break;
+            case 4: addAffectedPerson(); break;
+            case 5: viewAffectedPeople(); break;
+            case 6: updatePersonStatus(); break;
+            case 7: addTeam(); break;
+            case 8: viewTeams(); break;
             case 0: break;
             default: cout << "Invalid choice.\n";
         }

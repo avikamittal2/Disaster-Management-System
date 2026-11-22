@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <unordered_map>
 #include <fstream>
 #include <limits>
 using namespace std;
@@ -59,6 +60,11 @@ private:
     Person* peopleHead;
     History* historyTop;
 
+    // Authentication Data
+    unordered_map<string, string> users; // userID -> password
+    string currentUser;
+    bool isAuthenticated;
+
     vector<Disaster> disasters;
     vector<Team> teams;
     vector<Resource> resources;
@@ -77,6 +83,15 @@ private:
 public:
     DisasterManagementSystem();
     ~DisasterManagementSystem();
+
+    // Module 0: User Authentication (AuthModule.cpp)
+    bool isLoggedIn() const;
+    string getCurrentUser() const;
+    bool login();
+    void registerUser();
+    void changePassword();
+    void logout();
+    void authMenu();
 
     // Module 1: Disaster Management Record (DisasterModule.cpp)
     void addDisaster();

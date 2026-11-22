@@ -6,8 +6,8 @@ DisasterManagementSystem::DisasterManagementSystem() {
     isAuthenticated = false;
     currentUser = "";
 
-    // Default administrator account
-    users["admin"] = "admin123";
+    // Default administrator account (using vector instead of hash map)
+    users.push_back({"admin", "admin123"});
 }
 
 DisasterManagementSystem::~DisasterManagementSystem() {

@@ -1,6 +1,5 @@
- /* MODULE 5: AUDIT HISTORY */
-   
- #include "DisasterManagementSystem.h"
+/* Module 5: Audit history */
+#include "DisasterManagementSystem.h"
 
 void DisasterManagementSystem::viewHistory() {
     if (historyTop == NULL) {
@@ -26,6 +25,7 @@ void DisasterManagementSystem::saveDataToFile() {
         return;
     }
 
+    file << "EXPORTED BY USER: " << currentUser << "\n\n";
     file << "DISASTER RECORDS\n";
 
     for (int i = 0; i < (int)disasters.size(); i++) {

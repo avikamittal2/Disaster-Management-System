@@ -12,7 +12,7 @@ using namespace std;
 
 const int MAX_LOCATIONS = 100;
 
-// ==================== DATA STRUCTURES ====================
+// ==================== DATA STRUCTURES USED ====================
 struct User{
     string userId;
     string password;

@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <queue>
-#include <unordered_map>
 #include <fstream>
 #include <limits>
 using namespace std;
@@ -14,7 +13,10 @@ using namespace std;
 const int MAX_LOCATIONS = 100;
 
 // ==================== DATA STRUCTURES ====================
-
+struct User{
+    string userId;
+    string password;
+};
 struct Person {
     string id, name, location, status;
     Person* next;
@@ -61,7 +63,7 @@ private:
     History* historyTop;
 
     // Authentication Data
-    unordered_map<string, string> users; // userID -> password
+    vector<User> users; // userID -> password
     string currentUser;
     bool isAuthenticated;
 

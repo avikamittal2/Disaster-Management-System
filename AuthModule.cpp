@@ -21,13 +21,14 @@ bool DisasterManagementSystem::login() {
         cout << "Enter Password: ";
         cin >> password;
 
-        auto it = users.find(userId);
-        if (it != users.end() && it->second == password) {
-            currentUser = userId;
-            isAuthenticated = true;
-            pushHistory("User logged in");
-            cout << "Login successful! Welcome, " << currentUser << ".\n";
-            return true;
+        for (int i = 0; i < (int)users.size(); i++) {
+            if (users[i].userId == userId && users[i].password == password) {
+                currentUser = userId;
+                isAuthenticated = true;
+                pushHistory("User logged in");
+                cout << "Login successful! Welcome, " << currentUser << ".\n";
+                return true;
+            }
         }
 
         attempts++;
@@ -46,9 +47,11 @@ void DisasterManagementSystem::registerUser() {
     cout << "Enter new User ID: ";
     cin >> userId;
 
-    if (users.find(userId) != users.end()) {
-        cout << "User ID already exists. Please choose another.\n";
-        return;
+    for (int i = 0; i < (int)users.size(); i++) {
+        if (users[i].userId == userId) {
+            cout << "User ID already exists. Please choose another.\n";
+            return;
+        }
     }
 
     cout << "Enter Password: ";
@@ -62,7 +65,7 @@ void DisasterManagementSystem::registerUser() {
         return;
     }
 
-    users[userId] = password;
+    users.push_back({userId, password});
     pushHistory("Registered new user: " + userId);
     cout << "User '" << userId << "' registered successfully!\n";
 }
@@ -79,7 +82,15 @@ void DisasterManagementSystem::changePassword() {
     cout << "Enter current password: ";
     cin >> oldPassword;
 
-    if (users[currentUser] != oldPassword) {
+    int userIndex = -1;
+    for (int i = 0; i < (int)users.size(); i++) {
+        if (users[i].userId == currentUser) {
+            userIndex = i;
+            break;
+        }
+    }
+
+    if (userIndex == -1 || users[userIndex].password != oldPassword) {
         cout << "Incorrect current password.\n";
         return;
     }
@@ -95,7 +106,7 @@ void DisasterManagementSystem::changePassword() {
         return;
     }
 
-    users[currentUser] = newPassword;
+    users[userIndex].password = newPassword;
     pushHistory("Changed password");
     cout << "Password updated successfully.\n";
 }

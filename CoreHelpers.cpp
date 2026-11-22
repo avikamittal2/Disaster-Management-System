@@ -3,6 +3,11 @@
 DisasterManagementSystem::DisasterManagementSystem() {
     peopleHead = NULL;
     historyTop = NULL;
+    isAuthenticated = false;
+    currentUser = "";
+
+    // Default administrator account
+    users["admin"] = "admin123";
 }
 
 DisasterManagementSystem::~DisasterManagementSystem() {
@@ -21,7 +26,8 @@ DisasterManagementSystem::~DisasterManagementSystem() {
 
 void DisasterManagementSystem::pushHistory(string action) {
     History* temp = new History;
-    temp->action = action;
+    string actor = isAuthenticated ? "[" + currentUser + "] " : "[System] ";
+    temp->action = actor + action;
     temp->next = historyTop;
     historyTop = temp;
 }
